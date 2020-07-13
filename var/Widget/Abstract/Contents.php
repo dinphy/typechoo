@@ -114,6 +114,8 @@ class Widget_Abstract_Contents extends Widget_Abstract
         }
 
         $contents = explode('<!--more-->', $content);
+        $contents = str_replace("</p>", "↵ </p>", $contents);
+        $contents = str_replace("</blockquote>", "↵ </blockquote>", $contents);
         list($excerpt) = $contents;
 
         return Typecho_Common::fixHtml($this->pluginHandle(__CLASS__)->excerptEx($excerpt, $this));
