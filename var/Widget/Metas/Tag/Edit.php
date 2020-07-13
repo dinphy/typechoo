@@ -138,6 +138,11 @@ class Widget_Metas_Tag_Edit extends Widget_Abstract_Metas implements Widget_Inte
         _t('标签缩略名'), _t('标签缩略名用于创建友好的链接形式, 如果留空则默认使用标签名称.'));
         $form->addInput($slug);
 
+        /** 分类描述 */
+        $description =  new Typecho_Widget_Helper_Form_Element_Textarea('description', NULL, NULL,
+        _t('标签描述'), _t('此文字用于描述标签, 在有的主题中它会被显示.'));
+        $form->addInput($description);
+
         /** 标签动作 */
         $do = new Typecho_Widget_Helper_Form_Element_Hidden('do');
         $form->addInput($do);
@@ -165,6 +170,7 @@ class Widget_Metas_Tag_Edit extends Widget_Abstract_Metas implements Widget_Inte
             $slug->value($meta['slug']);
             $do->value('update');
             $mid->value($meta['mid']);
+            $description->value($meta['description']);
             $submit->value(_t('编辑标签'));
             $_action = 'update';
         } else {
@@ -208,7 +214,7 @@ class Widget_Metas_Tag_Edit extends Widget_Abstract_Metas implements Widget_Inte
         }
 
         /** 取出数据 */
-        $tag = $this->request->from('name', 'slug');
+        $tag = $this->request->from('name', 'slug', 'description');
         $tag['type'] = 'tag';
         $tag['slug'] = Typecho_Common::slugName(empty($tag['slug']) ? $tag['name'] : $tag['slug']);
 
@@ -240,7 +246,7 @@ class Widget_Metas_Tag_Edit extends Widget_Abstract_Metas implements Widget_Inte
         }
 
         /** 取出数据 */
-        $tag = $this->request->from('name', 'slug', 'mid');
+        $tag = $this->request->from('name', 'slug', 'mid', 'description');
         $tag['type'] = 'tag';
         $tag['slug'] = Typecho_Common::slugName(empty($tag['slug']) ? $tag['name'] : $tag['slug']);
 
