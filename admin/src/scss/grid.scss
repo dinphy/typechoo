@@ -5,24 +5,12 @@
  * Update: 2013.11.25
  */
 
-//
-// Config
-//
-$columns: 12;
-$column-width: 100% / $columns;
-$gutter-width: 20px;
 
-
-// Break point
-$screen-tablet:  768px;
-$screen-desktop: 992px;
-$screen-wide: 1200px;
+@import "vars";
 
 
 // Mixins
 %box-sizing {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
@@ -190,21 +178,21 @@ $screen-wide: 1200px;
  */
 
 // Hidden in mobile and down
-@media (max-width: $screen-tablet - 1px) {
+@media (max-width: $screen-phone - 1px) {
   .kit-hidden-mb {
     display: none;
   }
 }
 
 // Hidden in tablet and down
-@media (max-width: $screen-desktop - 1px) {
+@media (max-width: $screen-tablet - 1px) {
   .kit-hidden-tb {
     display: none;
   }
 }
 
 // Hidden in descktop and down
-@media (max-width: $screen-wide - 1px) {
+@media (max-width: $screen-desktop - 1px) {
   .kit-hidden {
     display: none;
   }

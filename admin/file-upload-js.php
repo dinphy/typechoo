@@ -1,8 +1,8 @@
 <?php if(!defined('__TYPECHO_ADMIN__')) exit; ?>
 <?php
-if (isset($post) && $post instanceof Typecho_Widget && $post->have()) {
+if (isset($post) && $post instanceof \Typecho\Widget && $post->have()) {
     $fileParentContent = $post;
-} else if (isset($page) && $page instanceof Typecho_Widget && $page->have()) {
+} elseif (isset($page) && $page instanceof \Typecho\Widget && $page->have()) {
     $fileParentContent = $page;
 }
 
@@ -13,8 +13,8 @@ if (preg_match("/^([0-9]+)([a-z]{1,2})$/i", $phpMaxFilesize, $matches)) {
 }
 ?>
 
-<script src="<?php $options->adminStaticUrl('js', 'moxie.js?v=' . $suffixVersion); ?>"></script>
-<script src="<?php $options->adminStaticUrl('js', 'plupload.js?v=' . $suffixVersion); ?>"></script>
+<script src="<?php $options->adminStaticUrl('js', 'moxie.js'); ?>"></script>
+<script src="<?php $options->adminStaticUrl('js', 'plupload.js'); ?>"></script>
 <script>
 $(document).ready(function() {
     function updateAttacmentNumber () {

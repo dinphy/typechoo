@@ -59,8 +59,6 @@ a.balloon-button {
   /** 修正ie中文不对齐 */
   zoom:1;
   
-  -moz-border-radius: 30px;
-  -webkit-border-radius: 30px;
   border-radius: 30px;
   white-space: nowrap;
 }
@@ -71,7 +69,7 @@ a.button:hover, a.balloon-button:hover {
   text-decoration: none;
 }
 
-
+@import "vars";
 @import "forms";
 @import "buttons";
 @import "messages";
@@ -79,12 +77,6 @@ a.button:hover, a.balloon-button:hover {
 
 @import "header";
 @import "footer";
-
-/* 低版本浏览器升级提示 */
-.browsehappy {
-  border: none;
-  text-align: center;
-}
 
 /** 顶部消息样式 by 70 */
 .popup {
@@ -99,8 +91,6 @@ a.button:hover, a.balloon-button:hover {
   z-index: 10;
   text-align: center;
 
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
 }
 
@@ -138,36 +128,38 @@ a.button:hover, a.balloon-button:hover {
   list-style: none;
   margin: 1em 0;
   padding: 0;
-}
 
-.typecho-option li {
-}
+  &-submit li {
+    border-bottom: none;
+  }
 
-.typecho-option-submit li {
-  border-bottom: none;
-}
+  label {
+    &.typecho-label {
+      display: block;
+      margin-bottom: .5em;
+      font-weight: bold;
+    }
 
-.typecho-option label.typecho-label {
-  display: block;
-  margin-bottom: .5em;
-  font-weight: bold;
-}
-.typecho-option label.required:after {
-  content: " *";
-  color: #B94A48;
-}
-.typecho-option label.typecho-label+input {
-}
-.typecho-option span { margin-right: 15px; }
-.typecho-option .description {
-  margin: .5em 0 0;
-  color: #999;
-  font-size: .92857em;
-}
+    &.required:after {
+      content: " *";
+      color: #B94A48;
+    }
+  }
 
-.typecho-option input.file {
-  width: 100%;
-  margin: .7em 0;
+  span {
+    margin-right: 15px;
+  }
+
+  .description {
+    margin: .5em 0 0;
+    color: #999;
+    font-size: .92857em;
+  }
+
+  input.file {
+    width: 100%;
+    margin: .7em 0;
+  }
 }
 
 .front-archive {
@@ -175,73 +167,12 @@ a.button:hover, a.balloon-button:hover {
 }
 
 .profile-avatar {
-  border: 1px dashed #D9D9D6;
-  max-width: 100%;
+  width: 220px;
+  height: 220px;
+  border-radius: 10px;
 }
 
 /** 增加配置面板内部的错误样式 by 70 */
-
-
-/** 
-* 安装样式
-* 
-* @author mingcheng
-* @date   2008-09-06
-*/
-
-/**
-* 安装向导
-*/
-.typecho-install {
-  padding-bottom: 2em;
-}
-.typecho-install-patch {
-  margin-bottom: 2em;
-  padding: 2em 0;
-  background-color: #292D33;
-  color: #FFF;
-  text-align: center;
-}
-
-.typecho-install-patch ol {
-  list-style: none;
-  margin: 3em 0 1em;
-  padding: 0;
-  color: #999;
-}
-.typecho-install-patch li {
-  display: inline-block;
-  margin: 0 .8em;
-}
-.typecho-install-patch span {
-  display: inline-block;
-  margin-right: 5px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  border: 2px solid #999;
-  text-align: center;
-  border-radius: 2em;
-}
-.typecho-install-patch li.current {
-  color: #FFF;
-  font-weight: bold;
-}
-.typecho-install-patch li.current span {
-  border-color: #FFF;
-}
-
-
-/**
-* 安装主体内容
-*/
-
-.typecho-install .typecho-install-body input {
-  width: 100%;
-}
-.typecho-install-body .typecho-option li {
-  margin: 1em 0;
-}
 
 
 /**
@@ -439,12 +370,15 @@ a.button:hover, a.balloon-button:hover {
   vertical-align: text-top;
 }
 
-.typecho-list-operate .operate {
-  float: left;
-}
-
-.typecho-list-operate .search {
-  float: right;
+@media (min-width: $screen-phone) {
+  .typecho-list-operate {
+    .operate {
+      float: left;
+    }
+    .search {
+      float: right;
+    }
+  }
 }
 
 .typecho-list-operate span.operate-delete, a.operate-delete,
@@ -712,7 +646,6 @@ a.operate-reply {
 
 .typecho-post-area .right {
   float: right;
-  padding-left: 24px;
 }
 
 .typecho-post-area .left {
@@ -953,6 +886,29 @@ background: #FFF1A8;
   background-color: #FFFBCC;
 }
 
+@media (max-width: $screen-phone - 1px) {
+  .typecho-list-operate {
+    .search {
+      margin-top: 10px;
+    }
+  }
+
+  .typecho-table-wrap {
+    padding: 10px;
+    margin: 0 -10px;
+  }
+
+  .typecho-option-submit {
+    button[type="submit"] {
+      width: 100%;
+    }
+  }
+
+  .profile-avatar {
+    width: 110px;
+    height: 110px;
+  }
+}
 
 /**
 * 导入扩展样式

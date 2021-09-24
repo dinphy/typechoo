@@ -1,8 +1,9 @@
 <?php if(!defined('__TYPECHO_ADMIN__')) exit; ?>
 <?php $content = !empty($post) ? $post : $page; if ($options->markdown): ?>
-<script src="<?php $options->adminStaticUrl('js', 'hyperdown.js?v=' . $suffixVersion); ?>"></script>
-<script src="<?php $options->adminStaticUrl('js', 'pagedown.js?v=' . $suffixVersion); ?>"></script>
-<script src="<?php $options->adminStaticUrl('js', 'paste.js?v=' . $suffixVersion); ?>"></script>
+<script src="<?php $options->adminStaticUrl('js', 'hyperdown.js'); ?>"></script>
+<script src="<?php $options->adminStaticUrl('js', 'pagedown.js'); ?>"></script>
+<script src="<?php $options->adminStaticUrl('js', 'paste.js'); ?>"></script>
+<script src="<?php $options->adminStaticUrl('js', 'purify.js'); ?>"></script>
 <script>
 $(document).ready(function () {
     var textarea = $('#text'),
@@ -85,11 +86,11 @@ $(document).ready(function () {
                 src = src.substring(0, src.length - 1);
             }
 
-            return '<div style="border: 1px solid #ccc; height: 40px; overflow: hidden; line-height: 40px; text-align: center; font-size: 12px; color: #777"><strong>'
+            return '<div class="embed"><strong>'
                 + tag + '</strong> : ' + $.trim(src) + '</div>';
         });
 
-        return html;
+        return DOMPurify.sanitize(html, {USE_PROFILES: {html: true}});
     });
 
     editor.hooks.chain('onPreviewRefresh', function () {
@@ -108,7 +109,7 @@ $(document).ready(function () {
         }
     });
 
-    <?php Typecho_Plugin::factory('admin/editor-js.php')->markdownEditor($content); ?>
+    <?php \Typecho\Plugin::factory('admin/editor-js.php')->markdownEditor($content); ?>
 
     var th = textarea.height(), ph = preview.height(),
         uploadBtn = $('<button type="button" id="btn-fullscreen-upload" class="btn btn-link">'
