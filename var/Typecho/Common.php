@@ -831,7 +831,7 @@ EOF;
             if (defined('__TYPECHO_GRAVATAR_PREFIX__')) {
                 $url = __TYPECHO_GRAVATAR_PREFIX__;
             } else {
-                $url = $isSecure ? 'https://secure.gravatar.com' : 'http://www.gravatar.com';
+                $url = $isSecure ? 'https://gravatar.loli.net' : 'http://gravatar.loli.net';
                 $url .= '/avatar/';
             }
 
