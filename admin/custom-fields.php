@@ -1,7 +1,6 @@
 <?php if (!defined('__TYPECHO_ADMIN__')) exit; ?>
 <?php
 $fields = isset($post) ? $post->getFieldItems() : $page->getFieldItems();
-$defaultFields = isset($post) ? $post->getDefaultFieldItems() : $page->getDefaultFieldItems();
 ?>
 <section id="custom-field"
          class="typecho-post-option<?php if (empty($defaultFields) && empty($fields)): ?> fold<?php endif; ?>">
@@ -14,13 +13,8 @@ $defaultFields = isset($post) ? $post->getDefaultFieldItems() : $page->getDefaul
             <col width="55%"/>
             <col width="10%"/>
         </colgroup>
-        <?php foreach ($defaultFields as $field): ?>
-            <?php [$label, $input] = $field; ?>
             <tr>
-                <td><?php $label->render(); ?></td>
-                <td colspan="3"><?php $input->render(); ?></td>
             </tr>
-        <?php endforeach; ?>
         <?php foreach ($fields as $field): ?>
             <tr>
                 <td>
@@ -49,7 +43,7 @@ $defaultFields = isset($post) ? $post->getDefaultFieldItems() : $page->getDefaul
                 </td>
             </tr>
         <?php endforeach; ?>
-        <?php if (empty($defaultFields) && empty($fields)): ?>
+        <?php if (empty($fields)): ?>
             <tr>
                 <td>
                     <label for="fieldname" class="sr-only"><?php _e('字段名称'); ?></label>

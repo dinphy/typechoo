@@ -155,7 +155,7 @@ class Edit extends Contents implements ActionInterface
     }
 
     /**
-     * getFieldItems
+     * getFieldItems（自定义字段面板配置的自定义字段）
      *
      * @throws DbException
      */
@@ -176,7 +176,8 @@ class Edit extends Contents implements ActionInterface
                     continue;
                 }
 
-                if (!isset($defaultFields[$row['name']])) {
+                /** 由于 Checkbox 的表单名与字段名不一致，需要判断末尾有 [] 的形式 */
+                if (!isset($defaultFields[$row['name']]) && !isset($defaultFields[$row['name'].'[]']) ) {
                     $fields[] = $row;
                 }
             }
@@ -186,7 +187,7 @@ class Edit extends Contents implements ActionInterface
     }
 
     /**
-     * getDefaultFieldItems
+     * getDefaultFieldItems（主题配置后的自定义字段）
      *
      * @return array
      */
@@ -229,18 +230,29 @@ class Edit extends Contents implements ActionInterface
                 if (preg_match("/^fields\[(.+)\]$/", $name, $matches)) {
                     $name = $matches[1];
                 } else {
-                    foreach ($item->inputs as $input) {
-                        $input->setAttribute('name', 'fields[' . $name . ']');
+                    foreach ($item->inputs as $input) {                        
+                        /** 若表单名以 [] 结尾，那么需要写成正确的 fields 嵌套 name */
+                        if (substr($name, -2) === '[]') {
+                            $input->setAttribute('name', 'fields[' . substr($name, 0, -2) . '][]');
+                        } else {
+                            $input->setAttribute('name', 'fields[' . $name . ']');
+                        }
                     }
                 }
 
                 if (isset($fields->{$name})) {
                     $item->value($fields->{$name});
                 }
-
+                /** 判断表单名是否以 [] 结尾，如果是应当去掉，因为数据库中字段名不含符号 */
+                if (preg_match("/^(.+)\[\]$/", $name, $matches)) {
+                    $name_array = $matches[1];
+                    if (isset($fields->{$name_array})) {
+                        $item->value($fields->{$name_array});
+                    }
+                }
                 $elements = $item->container->getItems();
                 array_shift($elements);
-                $div = new Layout('div');
+                $div = new Layout('p');
 
                 foreach ($elements as $el) {
                     $div->addItem($el);
@@ -657,7 +669,11 @@ class Edit extends Contents implements ActionInterface
                     continue;
                 }
 
-                $fields[$val] = [$data['fieldTypes'][$key], $data['fieldValues'][$key]];
+                /** 为避免自定义字段面板的字段和主题定制的字段解析混淆，给前者的数组增加 keyname */
+                $fields[$val] = [
+                    'type'  => $data['fieldTypes'][$key],
+                    'value' => $data['fieldValues'][$key]
+                ];
             }
         }
 

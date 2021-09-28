@@ -300,7 +300,8 @@ class Contents extends Base implements QueryInterface
         foreach ($fields as $name => $value) {
             $type = 'str';
 
-            if (is_array($value) && 2 == count($value)) {
+            /** 更改判断来自自定义字段面板数据的方式为 判断 Array Keynames 是否一致 */
+            if (is_array($value) && array_keys($value) === ['type', 'value']) {
                 $type = $value[0];
                 $value = $value[1];
             } elseif (strpos($name, ':') > 0) {
@@ -320,13 +321,18 @@ class Contents extends Base implements QueryInterface
                 unset($exists[$name]);
             }
 
+            if (is_array($value)) {
+                $value = serialize($value);
+            }
+
             $this->setField($name, $type, $value, $cid);
         }
 
-        foreach ($exists as $name => $value) {
-            $this->db->query($this->db->delete('table.fields')
-                ->where('cid = ? AND name = ?', $cid, $name));
-        }
+        /** 如果某字段未传入，删除该 cid 下的字段数据 */
+        // foreach ($exists as $name => $value) {
+        //     $this->db->query($this->db->delete('table.fields')
+        //         ->where('cid = ? AND name = ?', $cid, $name));
+        // }
     }
 
     /**
@@ -865,9 +871,14 @@ class Contents extends Base implements QueryInterface
             ->where('cid = ?', $this->cid));
 
         foreach ($rows as $row) {
-            $fields[$row['name']] = $row[$row['type'] . '_value'];
+            /** 检查传入的字符串数据能否反序列化，若能，转换为数组传入；若不能，可能为字符串或其它类型 */
+            $fields_arr = unserialize($row['str_value']);
+            if ($fields_arr) {
+                $fields[$row['name']] = $fields_arr;
+            } else {
+                $fields[$row['name']] = $row[$row['type'] . '_value'];
+            }
         }
-
         return new Config($fields);
     }
 
