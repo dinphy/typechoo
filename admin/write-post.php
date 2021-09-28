@@ -3,6 +3,7 @@ include 'common.php';
 include 'header.php';
 include 'menu.php';
 \Widget\Contents\Post\Edit::alloc()->to($post);
+$defaultFields = isset($post) ? $post->getDefaultFieldItems() : $page->getDefaultFieldItems();
 ?>
 <div class="main">
     <div class="body container">
@@ -76,8 +77,9 @@ include 'menu.php';
 
                 <div id="edit-secondary" class="col-mb-12 col-tb-3" role="complementary">
                     <ul class="typecho-option-tabs clearfix">
-                        <li class="active w-50"><a href="#tab-advance"><?php _e('选项'); ?></a></li>
-                        <li class="w-50"><a href="#tab-files" id="tab-files-btn"><?php _e('附件'); ?></a></li>
+                        <li class="active w-33"><a href="#tab-advance"><?php _e('选项'); ?></a></li>
+                        <li class="w-33"><a href="#tab-files" id="tab-files-btn"><?php _e('附件'); ?></a></li>
+                        <li class="w-33"><a href="#tab-strange" id="tab-strange-btn"><?php _e('高级'); ?></a></li>
                     </ul>
 
 
@@ -118,80 +120,87 @@ include 'menu.php';
                                       class="w-100 text"/></p>
                         </section>
 
-                        <?php \Typecho\Plugin::factory('admin/write-post.php')->option($post); ?>
+                    <?php foreach ($defaultFields as $field): ?>
+                        <?php [$label, $input] = $field; ?>
+                        <section class="typecho-post-option">
+                            <?php $label->render(); ?>
+                            <?php $input->render(); ?>
+                        </section>
+                    <?php endforeach; ?>
 
-                        <button type="button" id="advance-panel-btn" class="btn btn-xs"><?php _e('高级选项'); ?> <i
-                                class="i-caret-down"></i></button>
-                        <div id="advance-panel">
-                            <?php if ($user->pass('editor', true)): ?>
-                                <section class="typecho-post-option visibility-option">
-                                    <label for="visibility" class="typecho-label"><?php _e('公开度'); ?></label>
-                                    <p>
-                                        <select id="visibility" name="visibility">
-                                            <?php if ($user->pass('editor', true)): ?>
-                                                <option
-                                                    value="publish"<?php if (($post->status == 'publish' && !$post->password) || !$post->status): ?> selected<?php endif; ?>><?php _e('公开'); ?></option>
-                                                <option
-                                                    value="hidden"<?php if ($post->status == 'hidden'): ?> selected<?php endif; ?>><?php _e('隐藏'); ?></option>
-                                                <option
-                                                    value="password"<?php if (strlen($post->password) > 0): ?> selected<?php endif; ?>><?php _e('密码保护'); ?></option>
-                                                <option
-                                                    value="private"<?php if ($post->status == 'private'): ?> selected<?php endif; ?>><?php _e('私密'); ?></option>
-                                            <?php endif; ?>
-                                            <option
-                                                value="waiting"<?php if (!$user->pass('editor', true) || $post->status == 'waiting'): ?> selected<?php endif; ?>><?php _e('待审核'); ?></option>
-                                        </select>
-                                    </p>
-                                    <p id="post-password"<?php if (strlen($post->password) == 0): ?> class="hidden"<?php endif; ?>>
-                                        <label for="protect-pwd" class="sr-only">内容密码</label>
-                                        <input type="text" name="password" id="protect-pwd" class="text-s"
-                                               value="<?php $post->password(); ?>" size="16"
-                                               placeholder="<?php _e('内容密码'); ?>" autocomplete="off"/>
-                                    </p>
-                                </section>
-                            <?php endif; ?>
-
-                            <section class="typecho-post-option allow-option">
-                                <label class="typecho-label"><?php _e('权限控制'); ?></label>
-                                <ul>
-                                    <li><input id="allowComment" name="allowComment" type="checkbox" value="1"
-                                               <?php if ($post->allow('comment')): ?>checked="true"<?php endif; ?> />
-                                        <label for="allowComment"><?php _e('允许评论'); ?></label></li>
-                                    <li><input id="allowPing" name="allowPing" type="checkbox" value="1"
-                                               <?php if ($post->allow('ping')): ?>checked="true"<?php endif; ?> />
-                                        <label for="allowPing"><?php _e('允许被引用'); ?></label></li>
-                                    <li><input id="allowFeed" name="allowFeed" type="checkbox" value="1"
-                                               <?php if ($post->allow('feed')): ?>checked="true"<?php endif; ?> />
-                                        <label for="allowFeed"><?php _e('允许在聚合中出现'); ?></label></li>
-                                </ul>
-                            </section>
-
-                            <section class="typecho-post-option">
-                                <label for="trackback" class="typecho-label"><?php _e('引用通告'); ?></label>
-                                <p><textarea id="trackback" class="w-100 mono" name="trackback" rows="2"></textarea></p>
-                                <p class="description"><?php _e('每一行一个引用地址, 用回车隔开'); ?></p>
-                            </section>
-
-                            <?php \Typecho\Plugin::factory('admin/write-post.php')->advanceOption($post); ?>
-                        </div><!-- end #advance-panel -->
-
-                        <?php if ($post->have()): ?>
-                            <?php $modified = new \Typecho\Date($post->modified); ?>
-                            <section class="typecho-post-option">
-                                <p class="description">
-                                    <br>&mdash;<br>
-                                    <?php _e('本文由 <a href="%s">%s</a> 撰写',
-                                        \Typecho\Common::url('manage-posts.php?uid=' . $post->author->uid, $options->adminUrl), $post->author->screenName); ?>
-                                    <br>
-                                    <?php _e('最后更新于 %s', $modified->word()); ?>
-                                </p>
-                            </section>
-                        <?php endif; ?>
+                    <?php if ($post->have()): ?>
+                        <?php $modified = new \Typecho\Date($post->modified); ?>
+                        <section class="typecho-post-option">
+                            <p class="description">
+                                <br>&mdash;<br>
+                                <?php _e('本文由 <a href="%s">%s</a> 撰写',
+                                    \Typecho\Common::url('manage-posts.php?uid=' . $post->author->uid, $options->adminUrl), $post->author->screenName); ?>
+                                <br>
+                                <?php _e('最后更新于 %s', $modified->word()); ?>
+                            </p>
+                        </section>
+                    <?php endif; ?>
                     </div><!-- end #tab-advance -->
 
                     <div id="tab-files" class="tab-content hidden">
                         <?php include 'file-upload.php'; ?>
                     </div><!-- end #tab-files -->
+
+                    <div id="tab-strange" class="tab-content hidden">
+                    <?php \Typecho\Plugin::factory('admin/write-post.php')->option($post); ?>
+
+                    <?php if ($user->pass('editor', true)): ?>
+                        <section class="typecho-post-option visibility-option">
+                            <label for="visibility" class="typecho-label"><?php _e('公开度'); ?></label>
+                            <p>
+                                <select id="visibility" name="visibility">
+                                    <?php if ($user->pass('editor', true)): ?>
+                                        <option
+                                            value="publish"<?php if (($post->status == 'publish' && !$post->password) || !$post->status): ?> selected<?php endif; ?>><?php _e('公开'); ?></option>
+                                        <option
+                                            value="hidden"<?php if ($post->status == 'hidden'): ?> selected<?php endif; ?>><?php _e('隐藏'); ?></option>
+                                        <option
+                                            value="password"<?php if (strlen($post->password) > 0): ?> selected<?php endif; ?>><?php _e('密码保护'); ?></option>
+                                        <option
+                                            value="private"<?php if ($post->status == 'private'): ?> selected<?php endif; ?>><?php _e('私密'); ?></option>
+                                    <?php endif; ?>
+                                    <option
+                                        value="waiting"<?php if (!$user->pass('editor', true) || $post->status == 'waiting'): ?> selected<?php endif; ?>><?php _e('待审核'); ?></option>
+                                </select>
+                            </p>
+                            <p id="post-password"<?php if (strlen($post->password) == 0): ?> class="hidden"<?php endif; ?>>
+                                <label for="protect-pwd" class="sr-only">内容密码</label>
+                                <input type="text" name="password" id="protect-pwd" class="text-s"
+                                    value="<?php $post->password(); ?>" size="16"
+                                    placeholder="<?php _e('内容密码'); ?>" autocomplete="off"/>
+                            </p>
+                        </section>
+                    <?php endif; ?>
+
+                        <section class="typecho-post-option allow-option">
+                            <label class="typecho-label"><?php _e('权限控制'); ?></label>
+                            <ul>
+                                <li><input id="allowComment" name="allowComment" type="checkbox" value="1"
+                                        <?php if ($post->allow('comment')): ?>checked="true"<?php endif; ?> />
+                                    <label for="allowComment"><?php _e('允许评论'); ?></label></li>
+                                <li><input id="allowPing" name="allowPing" type="checkbox" value="1"
+                                        <?php if ($post->allow('ping')): ?>checked="true"<?php endif; ?> />
+                                    <label for="allowPing"><?php _e('允许被引用'); ?></label></li>
+                                <li><input id="allowFeed" name="allowFeed" type="checkbox" value="1"
+                                        <?php if ($post->allow('feed')): ?>checked="true"<?php endif; ?> />
+                                    <label for="allowFeed"><?php _e('允许在聚合中出现'); ?></label></li>
+                            </ul>
+                        </section>
+
+                        <section class="typecho-post-option">
+                            <label for="trackback" class="typecho-label"><?php _e('引用通告'); ?></label>
+                            <p><textarea id="trackback" class="w-100 mono" name="trackback" rows="2"></textarea></p>
+                            <p class="description"><?php _e('每一行一个引用地址, 用回车隔开'); ?></p>
+                        </section>
+
+                        <?php \Typecho\Plugin::factory('admin/write-post.php')->advanceOption($post); ?>
+
+                    </div><!-- end #tab-strange -->
                 </div>
             </form>
         </div>

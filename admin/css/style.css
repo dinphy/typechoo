@@ -41,6 +41,8 @@ input.text-l, textarea.text-l { padding: 10px; font-size: 1.14286em; }
 
 .w-30 { width: 30%; }
 
+.w-33 { width: 33.33%; }
+
 .w-40 { width: 40%; }
 
 .w-50 { width: 50%; }
@@ -382,6 +384,10 @@ a.operate-reply { color: #545c30; }
 .typecho-page-main .typecho-option .multiline { display: block; margin: .3em 0; }
 
 .typecho-page-main .typecho-option .multiline.hidden { display: none; }
+
+.typecho-page-main .tab-content .multiline { display: block; margin: .3em 0; }
+
+.typecho-page-main .tab-content .multiline.hidden { display: none; }
 
 /** 编辑模板 */
 .typecho-select-theme { height: 25px; line-height: 25px; margin: 15px 0px; }

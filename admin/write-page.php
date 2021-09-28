@@ -3,6 +3,7 @@ include 'common.php';
 include 'header.php';
 include 'menu.php';
 \Widget\Contents\Page\Edit::alloc()->to($page);
+$defaultFields = isset($post) ? $post->getDefaultFieldItems() : $page->getDefaultFieldItems();
 ?>
 <div class="main">
     <div class="body container">
@@ -70,8 +71,9 @@ include 'menu.php';
                 </div>
                 <div id="edit-secondary" class="col-mb-12 col-tb-3" role="complementary">
                     <ul class="typecho-option-tabs clearfix">
-                        <li class="active w-50"><a href="#tab-advance"><?php _e('选项'); ?></a></li>
-                        <li class="w-50"><a href="#tab-files" id="tab-files-btn"><?php _e('附件'); ?></a></li>
+                        <li class="active w-33"><a href="#tab-advance"><?php _e('选项'); ?></a></li>
+                        <li class="w-33"><a href="#tab-files" id="tab-files-btn"><?php _e('附件'); ?></a></li>
+                        <li class="w-33"><a href="#tab-strange" id="tab-strange-btn"><?php _e('高级'); ?></a></li>
                     </ul>
 
                     <div id="tab-advance" class="tab-content">
@@ -104,57 +106,67 @@ include 'menu.php';
                             <p class="description"><?php _e('如果你为此页面选择了一个自定义模板, 系统将按照你选择的模板文件展现它'); ?></p>
                         </section>
 
-                        <?php \Typecho\Plugin::factory('admin/write-page.php')->option($page); ?>
+                    <?php foreach ($defaultFields as $field): ?>
+                        <?php [$label, $input] = $field; ?>
+                        <section class="typecho-post-option">
+                            <?php $label->render(); ?>
+                            <?php $input->render(); ?>
+                        </section>
+                    <?php endforeach; ?>
 
-                        <button type="button" id="advance-panel-btn" class="btn btn-xs"><?php _e('高级选项'); ?> <i
-                                class="i-caret-down"></i></button>
-                        <div id="advance-panel">
-                            <section class="typecho-post-option visibility-option">
-                                <label for="visibility" class="typecho-label"><?php _e('公开度'); ?></label>
-                                <p>
-                                    <select id="visibility" name="visibility">
-                                        <option
-                                            value="publish"<?php if ($page->status == 'publish' || !$page->status): ?> selected<?php endif; ?>><?php _e('公开'); ?></option>
-                                        <option
-                                            value="hidden"<?php if ($page->status == 'hidden'): ?> selected<?php endif; ?>><?php _e('隐藏'); ?></option>
-                                    </select>
-                                </p>
-                            </section>
-
-                            <section class="typecho-post-option allow-option">
-                                <label class="typecho-label"><?php _e('权限控制'); ?></label>
-                                <ul>
-                                    <li><input id="allowComment" name="allowComment" type="checkbox" value="1"
-                                               <?php if ($page->allow('comment')): ?>checked="true"<?php endif; ?> />
-                                        <label for="allowComment"><?php _e('允许评论'); ?></label></li>
-                                    <li><input id="allowPing" name="allowPing" type="checkbox" value="1"
-                                               <?php if ($page->allow('ping')): ?>checked="true"<?php endif; ?> />
-                                        <label for="allowPing"><?php _e('允许被引用'); ?></label></li>
-                                    <li><input id="allowFeed" name="allowFeed" type="checkbox" value="1"
-                                               <?php if ($page->allow('feed')): ?>checked="true"<?php endif; ?> />
-                                        <label for="allowFeed"><?php _e('允许在聚合中出现'); ?></label></li>
-                                </ul>
-                            </section>
-
-                            <?php \Typecho\Plugin::factory('admin/write-page.php')->advanceOption($page); ?>
-                        </div>
-                        <?php if ($page->have()): ?>
-                            <?php $modified = new \Typecho\Date($page->modified); ?>
-                            <section class="typecho-post-option">
-                                <p class="description">
-                                    <br>&mdash;<br>
-                                    <?php _e('本页面由 <a href="%s">%s</a> 创建',
-                                        \Typecho\Common::url('manage-pages.php?uid=' . $page->author->uid, $options->adminUrl), $page->author->screenName); ?>
-                                    <br>
-                                    <?php _e('最后更新于 %s', $modified->word()); ?>
-                                </p>
-                            </section>
-                        <?php endif; ?>
+                    <?php if ($page->have()): ?>
+                        <?php $modified = new \Typecho\Date($page->modified); ?>
+                        <section class="typecho-post-option">
+                            <p class="description">
+                                <br>&mdash;<br>
+                                <?php _e('本页面由 <a href="%s">%s</a> 创建',
+                                    \Typecho\Common::url('manage-pages.php?uid=' . $page->author->uid, $options->adminUrl), $page->author->screenName); ?>
+                                <br>
+                                <?php _e('最后更新于 %s', $modified->word()); ?>
+                            </p>
+                        </section>
+                    <?php endif; ?>
                     </div><!-- end #tab-advance -->
 
                     <div id="tab-files" class="tab-content hidden">
                         <?php include 'file-upload.php'; ?>
                     </div><!-- end #tab-files -->
+
+
+                    <div id="tab-strange" class="tab-content hidden">
+                        <?php \Typecho\Plugin::factory('admin/write-page.php')->option($page); ?>
+                    
+                        <section class="typecho-post-option visibility-option">
+                            <label for="visibility" class="typecho-label"><?php _e('公开度'); ?></label>
+                            <p>
+                                <select id="visibility" name="visibility">
+                                    <option
+                                        value="publish"<?php if ($page->status == 'publish' || !$page->status): ?> selected<?php endif; ?>><?php _e('公开'); ?></option>
+                                    <option
+                                        value="hidden"<?php if ($page->status == 'hidden'): ?> selected<?php endif; ?>><?php _e('隐藏'); ?></option>
+                                </select>
+                            </p>
+                        </section>
+
+                        <section class="typecho-post-option allow-option">
+                            <label class="typecho-label"><?php _e('权限控制'); ?></label>
+                            <ul>
+                                <li><input id="allowComment" name="allowComment" type="checkbox" value="1"
+                                            <?php if ($page->allow('comment')): ?>checked="true"<?php endif; ?> />
+                                    <label for="allowComment"><?php _e('允许评论'); ?></label></li>
+                                <li><input id="allowPing" name="allowPing" type="checkbox" value="1"
+                                            <?php if ($page->allow('ping')): ?>checked="true"<?php endif; ?> />
+                                    <label for="allowPing"><?php _e('允许被引用'); ?></label></li>
+                                <li><input id="allowFeed" name="allowFeed" type="checkbox" value="1"
+                                            <?php if ($page->allow('feed')): ?>checked="true"<?php endif; ?> />
+                                    <label for="allowFeed"><?php _e('允许在聚合中出现'); ?></label></li>
+                            </ul>
+                        </section>
+
+                            <?php \Typecho\Plugin::factory('admin/write-page.php')->advanceOption($page); ?>
+                            
+                    </div><!-- end #tab-strange -->
+
                 </div>
             </form>
         </div>
