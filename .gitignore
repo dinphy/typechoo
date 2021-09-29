@@ -33,3 +33,7 @@ config.rb
 !/usr/themes/default
 node_modules/
 /tools/tmp/
+
+# typechoo
+.htaccess
+nginx.htaccess

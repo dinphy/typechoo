@@ -288,7 +288,7 @@ select { border: 1px solid #CCC; height: 28px; }
 
 .typecho-option-tabs.fix-tabs { margin-bottom: 1em; }
 
-.typecho-option-tabs a { display: block; margin-right: -1px; border: 1px solid #D9D9D6; padding: 0 15px; height: 26px; line-height: 26px; color: #666; box-sizing: border-box; }
+.typecho-option-tabs a { display: block; margin-right: -1px; border: 1px solid #D9D9D6; padding: 0 10px; height: 26px; line-height: 26px; color: #666; box-sizing: border-box; }
 
 .typecho-option-tabs a:hover { background-color: #E9E9E6; color: #666; text-decoration: none; }
 
