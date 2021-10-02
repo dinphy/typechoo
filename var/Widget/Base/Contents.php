@@ -329,10 +329,10 @@ class Contents extends Base implements QueryInterface
         }
 
         /** 如果某字段未传入，删除该 cid 下的字段数据 */
-        // foreach ($exists as $name => $value) {
-        //     $this->db->query($this->db->delete('table.fields')
-        //         ->where('cid = ? AND name = ?', $cid, $name));
-        // }
+        foreach ($exists as $name => $value) {
+            $this->db->query($this->db->delete('table.fields')
+                ->where('cid = ? AND name = ?', $cid, $name));
+        }
     }
 
     /**

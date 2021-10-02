@@ -5,7 +5,8 @@
 
 .row { margin-right: -10px; margin-left: -10px; }
 
-.row > form > [class*="col-"] { float: left; min-height: 1px; padding-right: 10px; padding-left: 10px; }
+.row > [class*="col-"], .row > form > [class*="col-"], .row > .typecho-edit-theme > [class*="col-"]
+{ float: left; min-height: 1px; padding-right: 10px; padding-left: 10px; }
 
 .row [class*="-push-"], .row [class*="-pull-"] { position: relative; }
 
