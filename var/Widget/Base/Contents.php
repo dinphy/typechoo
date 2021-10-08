@@ -325,7 +325,9 @@ class Contents extends Base implements QueryInterface
                 $value = serialize($value);
             }
 
-            $this->setField($name, $type, $value, $cid);
+            if ($type != null) {
+                $this->setField($name, $type, $value, $cid);
+            }
         }
 
         /** 如果某字段未传入，删除该 cid 下的字段数据 */
