@@ -143,7 +143,7 @@ class HyperDown
         $this->_id = 0;
 
         usort($this->blockParsers, function ($a, $b) {
-            return $a[1] < $b[1] ? - 1 : 1;
+            return $a[1] < $b[1] ? -1 : 1;
         });
 
         foreach ($this->blockParsers as $parser) {
@@ -477,7 +477,7 @@ class HyperDown
                 }
 
                 return $this->makeHolder(
-                    "<sup id=\"fnref-{$id}\"><a href=\"#fn-{$id}\" class=\"footnote-ref\">{$id}</a></sup>"
+                    "<sup id=\"fnref-{$id}\"><a href=\"#fn-{$id}\" class=\"footnote-ref\">[{$id}]</a></sup>"
                 );
             },
             $text
@@ -646,6 +646,26 @@ class HyperDown
                 return '<del>' .
                     $this->parseInlineCallback($matches[2]) .
                     '</del>';
+            },
+            $text
+        );
+
+        $text = preg_replace_callback(
+            "/(\={2})(.+?)\\1/",
+            function ($matches) {
+                return '<mark>' .
+                    $this->parseInlineCallback($matches[2]) .
+                    '</mark>';
+            },
+            $text
+        );
+
+        $text = preg_replace_callback(
+            "/(\+{2})(.+?)\\1/",
+            function ($matches) {
+                return '<ins>' .
+                    $this->parseInlineCallback($matches[2]) .
+                    '</ins>';
             },
             $text
         );
@@ -1120,7 +1140,7 @@ class HyperDown
     private function parseBlockMh(?array $block, int $key, string $line, ?array &$state, array $lines): bool
     {
         if (preg_match("/^\s*((=|-){2,})\s*$/", $line, $matches)
-                    && ($block && $block[0] == "normal" && !preg_match("/^\s*$/", $lines[$block[2]]))) {    // check if last line isn't empty
+            && ($block && $block[0] == "normal" && !preg_match("/^\s*$/", $lines[$block[2]]))) {    // check if last line isn't empty
             if ($this->isBlock('normal')) {
                 $this->backBlock(1, 'mh', $matches[1][0] == '=' ? 1 : 2)
                     ->setBlock($key)
@@ -1453,10 +1473,10 @@ class HyperDown
         foreach ($lines as $key => $line) {
             if (preg_match("/^(\s{" . $space . "})((?:[0-9]+\.?)|\-|\+|\*)(\s+)(.*)$/i", $line, $matches)) {
                 if ($type == 'ol' && $key == 0) {
-                    $start = intval($matches[2]);
+                    $olStart = intval($matches[2]);
 
-                    if ($start != 1) {
-                        $suffix = ' start="' . $start . '"';
+                    if ($olStart != 1) {
+                        $suffix = ' start="' . $olStart . '"';
                     }
                 }
 

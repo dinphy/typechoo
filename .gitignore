@@ -9,6 +9,7 @@
 /upload/
 /avatar/
 /.idea/
+/.vscode/
 .svn/
 *.orig
 *.aps
