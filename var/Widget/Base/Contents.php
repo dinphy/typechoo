@@ -800,7 +800,9 @@ class Contents extends Base implements QueryInterface
      */
     public function author(string $item = 'screenName')
     {
-        echo $this->author->{$item};
+        if ($this->have()) {
+            echo $this->author->{$item};
+        }
     }
 
     /**
@@ -821,9 +823,9 @@ class Contents extends Base implements QueryInterface
     /**
      * 文章作者
      *
-     * @return Widget
+     * @return Users
      */
-    protected function ___author(): Widget
+    protected function ___author(): Users
     {
         return Author::allocWithAlias($this->cid, ['uid' => $this->authorId]);
     }
