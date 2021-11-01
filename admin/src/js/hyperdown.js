@@ -251,7 +251,7 @@
             id = this.footnotes.length + 1;
             this.footnotes.push(this.parseInline(matches[1], '', false));
           }
-          return this.makeHolder(`<sup id=\"fnref-${id}\"><a href=\"#fn-${id}\" class=\"footnote-ref\">${id}</a></sup>`);
+          return this.makeHolder(`<sup id=\"fnref-${id}\"><a href=\"#fn-${id}\" class=\"footnote-ref\">[${id}]</a></sup>`);
         });
         // image
         text = text.replace(/!\[((?:[^\]]|\\\]|\\\[)*?)\]\(((?:[^\)]|\\\)|\\\()+?)\)/g, (...matches) => {
@@ -320,6 +320,12 @@
           return matches[1] + '<em>' + (this.parseInlineCallback(matches[3])) + '</em>' + matches[4];
         });
         text = text.replace(/(~{2})((?:.|\r)+?)\1/mg, (...matches) => {
+          return '<del>' + (this.parseInlineCallback(matches[2])) + '</del>';
+        });
+        text = text.replace(/(\={2})((?:.|\r)+?)\1/mg, (...matches) => {
+          return '<mark>' + (this.parseInlineCallback(matches[2])) + '</mark>';
+        });
+        text = text.replace(/(\+{2})((?:.|\r)+?)\1/mg, (...matches) => {
           return '<del>' + (this.parseInlineCallback(matches[2])) + '</del>';
         });
         return text;
