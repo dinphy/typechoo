@@ -16,10 +16,10 @@ $isAllPosts = ('on' == $request->get('__typecho_all_posts') || 'on' == \Typecho\
                     <ul class="typecho-option-tabs right">
                         <?php if ($user->pass('editor', true) && !isset($request->uid)): ?>
                             <li class="<?php if ($isAllPosts): ?> current<?php endif; ?>"><a
-                                    href="<?php echo $request->makeUriByRequest('__typecho_all_posts=on'); ?>"><?php _e('所有'); ?></a>
+                                    href="<?php echo $request->makeUriByRequest('__typecho_all_posts=on&page=1'); ?>"><?php _e('所有'); ?></a>
                             </li>
                             <li class="<?php if (!$isAllPosts): ?> current<?php endif; ?>"><a
-                                    href="<?php echo $request->makeUriByRequest('__typecho_all_posts=off'); ?>"><?php _e('我的'); ?></a>
+                                    href="<?php echo $request->makeUriByRequest('__typecho_all_posts=off&page=1'); ?>"><?php _e('我的'); ?></a>
                             </li>
                         <?php endif; ?>
                     </ul>
@@ -91,7 +91,7 @@ $isAllPosts = ('on' == $request->get('__typecho_all_posts') || 'on' == \Typecho\
                                         (isset($request->uid) ? '?uid=' . htmlspecialchars($request->get('uid')) : '') : '')); ?>"><?php _e('&laquo; 取消筛选'); ?></a>
                             <?php endif; ?>
                             <input type="text" class="text-s" placeholder="<?php _e('请输入关键字'); ?>"
-                                   value="<?php echo htmlspecialchars($request->keywords); ?>" name="keywords"/>
+                                   value="<?php echo htmlspecialchars($request->keywords ?? ''); ?>" name="keywords"/>
                             <select name="category">
                                 <option value=""><?php _e('所有分类'); ?></option>
                                 <?php \Widget\Metas\Category\Rows::alloc()->to($category); ?>
